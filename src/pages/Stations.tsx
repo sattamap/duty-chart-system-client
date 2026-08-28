@@ -1,17 +1,87 @@
 import { useState } from "react";
 
-import type { Station } from "../types/station";
+import type {
+  CreateStationInput,
+  Station,
+} from "../types/station";
+
 import { initialStations } from "../data/stations";
 
+import Modal from "../components/ui/Modal";
+import StationForm from "../components/stations/StationForm";
+
 function Stations() {
-  const [stations] =
+  const [stations, setStations] =
     useState<Station[]>(initialStations);
 
   const [search, setSearch] = useState("");
 
+  const [isModalOpen, setIsModalOpen] =
+    useState(false);
+
+  const [editingStation, setEditingStation] =
+    useState<Station | null>(null);
+
   const filteredStations = stations.filter((station) =>
-    station.name.toLowerCase().includes(search.toLowerCase())
+    station.name
+      .toLowerCase()
+      .includes(search.toLowerCase())
   );
+
+  const handleAddStation = (
+    data: CreateStationInput
+  ) => {
+    const newStation: Station = {
+      id: crypto.randomUUID(),
+      ...data,
+    };
+
+    setStations((currentStations) => [
+      ...currentStations,
+      newStation,
+    ]);
+
+    setIsModalOpen(false);
+  };
+
+  const handleEditStation = (
+    data: CreateStationInput
+  ) => {
+    if (!editingStation) {
+      return;
+    }
+
+    setStations((currentStations) =>
+      currentStations.map((station) =>
+        station.id === editingStation.id
+          ? {
+              ...station,
+              ...data,
+            }
+          : station
+      )
+    );
+
+    setEditingStation(null);
+    setIsModalOpen(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setEditingStation(null);
+    setIsModalOpen(true);
+  };
+
+  const handleOpenEditModal = (
+    station: Station
+  ) => {
+    setEditingStation(station);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingStation(null);
+  };
 
   return (
     <div className="space-y-6">
@@ -28,7 +98,11 @@ function Stations() {
           </p>
         </div>
 
-        <button className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-700">
+        <button
+          type="button"
+          onClick={handleOpenAddModal}
+          className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-700"
+        >
           + Add Station
         </button>
       </div>
@@ -40,7 +114,9 @@ function Stations() {
           type="text"
           placeholder="Search stations..."
           value={search}
-          onChange={(event) => setSearch(event.target.value)}
+          onChange={(event) =>
+            setSearch(event.target.value)
+          }
           className="w-full rounded-lg border border-slate-300 px-4 py-2.5 text-sm outline-none focus:border-slate-500"
         />
       </div>
@@ -114,11 +190,20 @@ function Stations() {
 
                   <td className="px-5 py-4">
                     <div className="flex gap-3">
-                      <button className="text-sm font-medium text-blue-600 hover:text-blue-800">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          handleOpenEditModal(station)
+                        }
+                        className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                      >
                         Edit
                       </button>
 
-                      <button className="text-sm font-medium text-red-600 hover:text-red-800">
+                      <button
+                        type="button"
+                        className="text-sm font-medium text-red-600 hover:text-red-800"
+                      >
                         Delete
                       </button>
                     </div>
@@ -129,6 +214,28 @@ function Stations() {
           </table>
         </div>
       </div>
+
+      {/* Station Modal */}
+
+      <Modal
+        isOpen={isModalOpen}
+        title={
+          editingStation
+            ? "Edit Station"
+            : "Add Station"
+        }
+        onClose={handleCloseModal}
+      >
+        <StationForm
+          initialData={editingStation ?? undefined}
+          onSubmit={
+            editingStation
+              ? handleEditStation
+              : handleAddStation
+          }
+          onCancel={handleCloseModal}
+        />
+      </Modal>
     </div>
   );
 }
