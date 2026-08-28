@@ -1,15 +1,24 @@
 import { useState } from "react";
 
-import type { Employee } from "../types/employee";
+import type {
+  CreateEmployeeInput,
+  Employee,
+} from "../types/employee";
 
 import { initialEmployees } from "../data/employees";
 import { initialStations } from "../data/stations";
 
+import Modal from "../components/ui/Modal";
+import EmployeeForm from "../components/employees/EmployeeForm";
+
 function Employees() {
-  const [employees] =
+  const [employees, setEmployees] =
     useState<Employee[]>(initialEmployees);
 
   const [search, setSearch] = useState("");
+
+  const [isModalOpen, setIsModalOpen] =
+    useState(false);
 
   const filteredEmployees = employees.filter(
     (employee) => {
@@ -37,6 +46,30 @@ function Employees() {
     return station?.name ?? "Unassigned";
   };
 
+  const handleAddEmployee = (
+    data: CreateEmployeeInput
+  ) => {
+    const newEmployee: Employee = {
+      id: crypto.randomUUID(),
+      ...data,
+    };
+
+    setEmployees((currentEmployees) => [
+      ...currentEmployees,
+      newEmployee,
+    ]);
+
+    setIsModalOpen(false);
+  };
+
+  const handleOpenAddModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -48,12 +81,14 @@ function Employees() {
           </h1>
 
           <p className="mt-1 text-sm text-slate-500">
-            Manage employees in your duty chart system.
+            Manage employees in your duty chart
+            system.
           </p>
         </div>
 
         <button
           type="button"
+          onClick={handleOpenAddModal}
           className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white hover:bg-slate-700"
         >
           + Add Employee
@@ -183,8 +218,6 @@ function Employees() {
                 </tr>
               ))}
 
-              {/* Empty Result */}
-
               {filteredEmployees.length === 0 && (
                 <tr>
                   <td
@@ -199,6 +232,20 @@ function Employees() {
           </table>
         </div>
       </div>
+
+      {/* Add Employee Modal */}
+
+      <Modal
+        isOpen={isModalOpen}
+        title="Add Employee"
+        onClose={handleCloseModal}
+      >
+        <EmployeeForm
+          stations={initialStations}
+          onSubmit={handleAddEmployee}
+          onCancel={handleCloseModal}
+        />
+      </Modal>
     </div>
   );
 }
