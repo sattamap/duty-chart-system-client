@@ -20,6 +20,9 @@ function Employees() {
   const [isModalOpen, setIsModalOpen] =
     useState(false);
 
+  const [editingEmployee, setEditingEmployee] =
+    useState<Employee | null>(null);
+
   const filteredEmployees = employees.filter(
     (employee) => {
       const searchTerm = search.toLowerCase();
@@ -46,6 +49,8 @@ function Employees() {
     return station?.name ?? "Unassigned";
   };
 
+  // Add Employee
+
   const handleAddEmployee = (
     data: CreateEmployeeInput
   ) => {
@@ -62,12 +67,51 @@ function Employees() {
     setIsModalOpen(false);
   };
 
+  // Edit Employee
+
+  const handleEditEmployee = (
+    data: CreateEmployeeInput
+  ) => {
+    if (!editingEmployee) {
+      return;
+    }
+
+    setEmployees((currentEmployees) =>
+      currentEmployees.map((employee) =>
+        employee.id === editingEmployee.id
+          ? {
+              ...employee,
+              ...data,
+            }
+          : employee
+      )
+    );
+
+    setEditingEmployee(null);
+    setIsModalOpen(false);
+  };
+
+  // Open Add Modal
+
   const handleOpenAddModal = () => {
+    setEditingEmployee(null);
     setIsModalOpen(true);
   };
 
+  // Open Edit Modal
+
+  const handleOpenEditModal = (
+    employee: Employee
+  ) => {
+    setEditingEmployee(employee);
+    setIsModalOpen(true);
+  };
+
+  // Close Modal
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
+    setEditingEmployee(null);
   };
 
   return (
@@ -202,6 +246,9 @@ function Employees() {
                     <div className="flex gap-3">
                       <button
                         type="button"
+                        onClick={() =>
+                          handleOpenEditModal(employee)
+                        }
                         className="text-sm font-medium text-blue-600 hover:text-blue-800"
                       >
                         Edit
@@ -233,16 +280,27 @@ function Employees() {
         </div>
       </div>
 
-      {/* Add Employee Modal */}
+      {/* Employee Modal */}
 
       <Modal
         isOpen={isModalOpen}
-        title="Add Employee"
+        title={
+          editingEmployee
+            ? "Edit Employee"
+            : "Add Employee"
+        }
         onClose={handleCloseModal}
       >
         <EmployeeForm
+          initialData={
+            editingEmployee ?? undefined
+          }
           stations={initialStations}
-          onSubmit={handleAddEmployee}
+          onSubmit={
+            editingEmployee
+              ? handleEditEmployee
+              : handleAddEmployee
+          }
           onCancel={handleCloseModal}
         />
       </Modal>
