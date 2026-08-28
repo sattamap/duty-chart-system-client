@@ -91,6 +91,27 @@ function Employees() {
     setIsModalOpen(false);
   };
 
+  // Delete Employee
+
+  const handleDeleteEmployee = (
+    employee: Employee
+  ) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete ${employee.name}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setEmployees((currentEmployees) =>
+      currentEmployees.filter(
+        (currentEmployee) =>
+          currentEmployee.id !== employee.id
+      )
+    );
+  };
+
   // Open Add Modal
 
   const handleOpenAddModal = () => {
@@ -256,6 +277,9 @@ function Employees() {
 
                       <button
                         type="button"
+                        onClick={() =>
+                          handleDeleteEmployee(employee)
+                        }
                         className="text-sm font-medium text-red-600 hover:text-red-800"
                       >
                         Delete
@@ -264,6 +288,8 @@ function Employees() {
                   </td>
                 </tr>
               ))}
+
+              {/* Empty Result */}
 
               {filteredEmployees.length === 0 && (
                 <tr>
