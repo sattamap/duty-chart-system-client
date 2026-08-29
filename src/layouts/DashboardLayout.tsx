@@ -14,6 +14,10 @@ const navigation = [
     path: "/employees",
   },
   {
+    name: "Leave-Types",
+    path: "/leave-types",
+  },
+  {
     name: "Shifts",
     path: "/shifts",
   },

@@ -7,6 +7,7 @@ import Stations from "../pages/Stations";
 import Employees from "../pages/Employees";
 import Shifts from "../pages/Shifts";
 import DutyCharts from "../pages/DutyCharts";
+import LeaveTypes from "../pages/LeaveTypes";
 
 function AppRoutes() {
   return (
@@ -15,6 +16,7 @@ function AppRoutes() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/stations" element={<Stations />} />
         <Route path="/employees" element={<Employees />} />
+        <Route path="/leave-types" element={<LeaveTypes />} />
         <Route path="/shifts" element={<Shifts />} />
         <Route path="/duty-charts" element={<DutyCharts />} />
       </Route>
