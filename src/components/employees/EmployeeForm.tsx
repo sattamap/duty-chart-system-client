@@ -29,15 +29,30 @@ function EmployeeForm({
     useState<CreateEmployeeInput>({
       employeeId:
         initialData?.employeeId ?? "",
-      name: initialData?.name ?? "",
+
+      name:
+        initialData?.name ?? "",
+
       designation:
         initialData?.designation ?? "",
-      phone: initialData?.phone ?? "",
-      email: initialData?.email ?? "",
+
+      phone:
+        initialData?.phone ?? "",
+
+      email:
+        initialData?.email ?? "",
+
       stationId:
         initialData?.stationId ??
         stations[0]?.id ??
         "",
+
+      dutyType:
+        initialData?.dutyType ?? "shift",
+
+      basicSalary:
+        initialData?.basicSalary ?? 0,
+
       isActive:
         initialData?.isActive ?? true,
     });
@@ -49,7 +64,11 @@ function EmployeeForm({
 
     setFormData((current) => ({
       ...current,
-      [name]: value,
+
+      [name]:
+        name === "basicSalary"
+          ? Number(value)
+          : value,
     }));
   };
 
@@ -151,7 +170,8 @@ function EmployeeForm({
           onChange={(event) =>
             setFormData((current) => ({
               ...current,
-              stationId: event.target.value,
+              stationId:
+                event.target.value,
             }))
           }
           required
@@ -162,7 +182,9 @@ function EmployeeForm({
           </option>
 
           {stations
-            .filter((station) => station.isActive)
+            .filter(
+              (station) => station.isActive
+            )
             .map((station) => (
               <option
                 key={station.id}
@@ -172,6 +194,86 @@ function EmployeeForm({
               </option>
             ))}
         </select>
+      </div>
+
+      {/* Duty Type */}
+
+      <div>
+        <label
+          htmlFor="dutyType"
+          className="mb-1.5 block text-sm font-medium text-slate-700"
+        >
+          Duty Type
+        </label>
+
+        <select
+          id="dutyType"
+          name="dutyType"
+          value={formData.dutyType}
+          onChange={(event) =>
+            setFormData((current) => ({
+              ...current,
+              dutyType:
+                event.target.value ===
+                "general"
+                  ? "general"
+                  : "shift",
+            }))
+          }
+          required
+          className="w-full rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
+        >
+          <option value="shift">
+            Shift Duty
+          </option>
+
+          <option value="general">
+            General Duty
+          </option>
+        </select>
+
+        <p className="mt-1.5 text-xs text-slate-500">
+          Shift Duty allows variable shifts and
+          day-offs. General Duty normally follows
+          the fixed Friday/Saturday day-off rule.
+        </p>
+      </div>
+
+      {/* Basic Salary */}
+
+      <div>
+        <label
+          htmlFor="basicSalary"
+          className="mb-1.5 block text-sm font-medium text-slate-700"
+        >
+          Basic Salary
+        </label>
+
+        <div className="relative">
+          <input
+            id="basicSalary"
+            name="basicSalary"
+            type="number"
+            min="0"
+            step="0.01"
+            value={
+              formData.basicSalary || ""
+            }
+            onChange={handleChange}
+            placeholder="e.g. 12480"
+            required
+            className="w-full rounded-lg border border-slate-300 px-4 py-2.5 pr-16 text-sm outline-none focus:border-slate-500 focus:ring-1 focus:ring-slate-500"
+          />
+
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-sm text-slate-400">
+            BDT
+          </span>
+        </div>
+
+        <p className="mt-1.5 text-xs text-slate-500">
+          Used later for calculating the
+          employee's monthly overtime limit.
+        </p>
       </div>
 
       {/* Phone */}

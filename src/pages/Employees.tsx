@@ -25,7 +25,8 @@ function Employees() {
 
   const filteredEmployees = employees.filter(
     (employee) => {
-      const searchTerm = search.toLowerCase();
+      const searchTerm =
+        search.toLowerCase();
 
       return (
         employee.name
@@ -41,12 +42,17 @@ function Employees() {
     }
   );
 
-  const getStationName = (stationId: string) => {
+  const getStationName = (
+    stationId: string
+  ) => {
     const station = initialStations.find(
-      (station) => station.id === stationId
+      (station) =>
+        station.id === stationId
     );
 
-    return station?.name ?? "Unassigned";
+    return (
+      station?.name ?? "Unassigned"
+    );
   };
 
   // Add Employee
@@ -78,7 +84,8 @@ function Employees() {
 
     setEmployees((currentEmployees) =>
       currentEmployees.map((employee) =>
-        employee.id === editingEmployee.id
+        employee.id ===
+        editingEmployee.id
           ? {
               ...employee,
               ...data,
@@ -107,7 +114,8 @@ function Employees() {
     setEmployees((currentEmployees) =>
       currentEmployees.filter(
         (currentEmployee) =>
-          currentEmployee.id !== employee.id
+          currentEmployee.id !==
+          employee.id
       )
     );
   };
@@ -146,8 +154,8 @@ function Employees() {
           </h1>
 
           <p className="mt-1 text-sm text-slate-500">
-            Manage employees in your duty chart
-            system.
+            Manage employees in your duty
+            chart system.
           </p>
         </div>
 
@@ -198,6 +206,14 @@ function Employees() {
                 </th>
 
                 <th className="px-5 py-3 font-medium text-slate-600">
+                  Duty Type
+                </th>
+
+                <th className="px-5 py-3 font-medium text-slate-600">
+                  Basic Salary
+                </th>
+
+                <th className="px-5 py-3 font-medium text-slate-600">
                   Status
                 </th>
 
@@ -208,93 +224,127 @@ function Employees() {
             </thead>
 
             <tbody>
-              {filteredEmployees.map((employee) => (
-                <tr
-                  key={employee.id}
-                  className="border-t border-slate-200"
-                >
-                  {/* Employee */}
+              {filteredEmployees.map(
+                (employee) => (
+                  <tr
+                    key={employee.id}
+                    className="border-t border-slate-200"
+                  >
+                    {/* Employee */}
 
-                  <td className="px-5 py-4">
-                    <p className="font-medium text-slate-800">
-                      {employee.name}
-                    </p>
+                    <td className="px-5 py-4">
+                      <p className="font-medium text-slate-800">
+                        {employee.name}
+                      </p>
 
-                    <p className="text-xs text-slate-500">
-                      {employee.email}
-                    </p>
-                  </td>
+                      <p className="text-xs text-slate-500">
+                        {employee.email}
+                      </p>
+                    </td>
 
-                  {/* Employee ID */}
+                    {/* Employee ID */}
 
-                  <td className="px-5 py-4 text-slate-600">
-                    {employee.employeeId}
-                  </td>
+                    <td className="px-5 py-4 text-slate-600">
+                      {employee.employeeId}
+                    </td>
 
-                  {/* Designation */}
+                    {/* Designation */}
 
-                  <td className="px-5 py-4 text-slate-600">
-                    {employee.designation}
-                  </td>
+                    <td className="px-5 py-4 text-slate-600">
+                      {employee.designation}
+                    </td>
 
-                  {/* Station */}
+                    {/* Station */}
 
-                  <td className="px-5 py-4 text-slate-600">
-                    {getStationName(
-                      employee.stationId
-                    )}
-                  </td>
+                    <td className="px-5 py-4 text-slate-600">
+                      {getStationName(
+                        employee.stationId
+                      )}
+                    </td>
 
-                  {/* Status */}
+                    {/* Duty Type */}
 
-                  <td className="px-5 py-4">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs font-medium ${
-                        employee.isActive
-                          ? "bg-green-100 text-green-700"
-                          : "bg-slate-100 text-slate-600"
-                      }`}
-                    >
-                      {employee.isActive
-                        ? "Active"
-                        : "Inactive"}
-                    </span>
-                  </td>
-
-                  {/* Actions */}
-
-                  <td className="px-5 py-4">
-                    <div className="flex gap-3">
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleOpenEditModal(employee)
-                        }
-                        className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                    <td className="px-5 py-4">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                          employee.dutyType ===
+                          "shift"
+                            ? "bg-blue-100 text-blue-700"
+                            : "bg-purple-100 text-purple-700"
+                        }`}
                       >
-                        Edit
-                      </button>
+                        {employee.dutyType ===
+                        "shift"
+                          ? "Shift Duty"
+                          : "General Duty"}
+                      </span>
+                    </td>
 
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleDeleteEmployee(employee)
-                        }
-                        className="text-sm font-medium text-red-600 hover:text-red-800"
+                    {/* Basic Salary */}
+
+                    <td className="px-5 py-4 text-slate-600">
+                      {employee.basicSalary.toLocaleString(
+                        "en-BD"
+                      )}{" "}
+                      BDT
+                    </td>
+
+                    {/* Status */}
+
+                    <td className="px-5 py-4">
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-medium ${
+                          employee.isActive
+                            ? "bg-green-100 text-green-700"
+                            : "bg-slate-100 text-slate-600"
+                        }`}
                       >
-                        Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                        {employee.isActive
+                          ? "Active"
+                          : "Inactive"}
+                      </span>
+                    </td>
+
+                    {/* Actions */}
+
+                    <td className="px-5 py-4">
+                      <div className="flex gap-3">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleOpenEditModal(
+                              employee
+                            )
+                          }
+                          className="text-sm font-medium text-blue-600 hover:text-blue-800"
+                        >
+                          Edit
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleDeleteEmployee(
+                              employee
+                            )
+                          }
+                          className="text-sm font-medium text-red-600 hover:text-red-800"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                )
+              )}
 
               {/* Empty Result */}
 
-              {filteredEmployees.length === 0 && (
+              {filteredEmployees.length ===
+                0 && (
                 <tr>
                   <td
-                    colSpan={6}
+                    colSpan={8}
                     className="px-5 py-10 text-center text-sm text-slate-500"
                   >
                     No employees found.

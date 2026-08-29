@@ -1,3 +1,5 @@
+export type DutyType = "shift" | "general";
+
 export interface Employee {
   id: string;
   employeeId: string;
@@ -6,6 +8,10 @@ export interface Employee {
   phone: string;
   email: string;
   stationId: string;
+
+  dutyType: DutyType;
+  basicSalary: number;
+
   isActive: boolean;
 }
 
