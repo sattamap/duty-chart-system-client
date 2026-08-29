@@ -10,6 +10,10 @@ const navigation = [
     path: "/stations",
   },
   {
+    name: "Duty Rules",
+    path: "/duty-rules",
+  },
+  {
     name: "Employees",
     path: "/employees",
   },
